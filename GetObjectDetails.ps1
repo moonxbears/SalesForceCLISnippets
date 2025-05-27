@@ -2,7 +2,8 @@ param (
     [Parameter(Mandatory=$true)][string]$sobject,
     [string[]]$fields,
     [switch]$display,
-    [switch]$help
+    [switch]$help,
+    [switch]$output
 )
 
 if ($help)
@@ -33,10 +34,24 @@ else
     {
         echo $fields.Count
         echo $fields
-        $objectQuery.fields | select $($fields)
+        if ($output)
+        {
+            $objectQuery.fields | select $($fields) | epcsv -Path "$sobject - details.csv"
+        }
+        else 
+        {    
+            $objectQuery.fields | select $($fields)
+        }
     }
     else
     {
-        $objectQuery.fields | select label, name, type
+        if ($output)
+        {
+            $objectQuery.fields | select label, name, type | epcsv -Path "$sobject - details.csv"
+        }
+        else 
+        {
+            $objectQuery.fields | select label, name, type
+        }
     }
 }
